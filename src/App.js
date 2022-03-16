@@ -1,25 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import React , {useState} from 'react'
+import { v4 as uuidv4 } from 'uuid';
+import Header from './component/Header'
+import DisplayTodo from './component/DisplayTodo';
+import '../src/style/main.css'
+import Navbar from './component/Navbar';
 
-function App() {
+const App = () => {
+
+  const [inputtodo, setInputtodo] = useState("");
+  const [addTodo, setaddTodo] = useState([]);
+  
+  const addItem = () => {
+
+    if(!inputtodo)
+    {
+      alert("plz input data");
+      return;
+    }
+
+    setaddTodo([...addTodo , {
+      data : inputtodo,
+      id : uuidv4(),
+      completed : false
+    }])
+
+    setInputtodo("");
+  }
+
+  const updateTodo = (id , value , e , inref) => {
+
+    if(e.which == "13")
+    {
+      setaddTodo(addTodo.map((curElem) => {
+        if(curElem.id == id)
+        {
+          return {...curElem , data : value };
+        }
+        return curElem;
+      }
+      ))
+
+      inref.current.disabled = true;
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Header addItem= {addItem} inputtodo={ inputtodo } setInputtodo={setInputtodo}/>
+      <Navbar addTodo= {addTodo} updateTodo={updateTodo} setaddTodo = {setaddTodo} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
